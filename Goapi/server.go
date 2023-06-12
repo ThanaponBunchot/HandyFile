@@ -1,57 +1,57 @@
-// package main
-
-// import (
-// 	"log"
-
-// 	"github.com/gofiber/fiber/v2"
-// )
-
-// type Contact struct {
-// 	FirstName    string `form:"firstName"`
-// 	LastName     string `form:"lastName`
-// 	Email        string `form:"email"`
-// 	MobileNumber string `form:"mobileNumber"`
-// 	Detail       string `form:"detail"`
-// }
-
-// func main() {
-// 	app := fiber.New()
-
-// 	app.Get("/", func(c *fiber.Ctx) error {
-// 		return c.SendString("Hello, World!")
-// 	})
-
-// 	app.Post("/v1/contact", func(c *fiber.Ctx) error {
-// 		ct := Contact{}
-// 		if err := c.BodyParser(&ct); err != nil {
-// 			return err
-// 		}
-// 		log.Println(ct.FirstName)
-// 		log.Println(ct.LastName)
-// 		return c.JSON(ct)
-// 	})
-
-// 	app.Listen(":3000")
-// }
-
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/ThanaponBunchot/demo-go-fiber/configs"
+	"github.com/ThanaponBunchot/demo-go-fiber/routes"
+	"github.com/gofiber/fiber/v2"
+)
 
 type Contact struct {
-	FirstName string `form:"firstName`
-	LastName  string `form:"lastName`
-	Tel       string `form:"tel"`
-	Email     string `form:"email"`
-	Detail    string `from:"detail"`
+	FirstName string `json:"firstName`
+	LastName  string `json:"lastName`
+	Tel       string `json:"tel"`
+	Email     string `json:"email"`
+	Detail    string `json:"detail"`
 }
 
+type Doctor struct {
+	FirstName string `json:"firstName`
+	LastName  string `json:"lastName`
+	License   string `json:"license`
+}
+
+var doctor []Doctor
+
 func main() {
+	
 	app := fiber.New()
+	//run database
+	configs.ConnectDB()
+
+	//routes
+	routes.UserRoute(app)
+
+
+
+
+
+
+
+
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello world")
 	})
+
+	app.Get("/:value", func(c *fiber.Ctx) error {
+		return c.SendString("value : " + c.Params("value"))
+	})
+
+	app.Get("/api/*", func(c *fiber.Ctx) error {
+		return c.SendString("api path/" + c.Params("*"))
+	})
+
+	app.Static("/home", "./public")
 
 	app.Post("/v1/contact", func(c *fiber.Ctx) error {
 		ct := Contact{}
@@ -68,5 +68,5 @@ func main() {
 		}
 	})
 
-	app.Listen(":3000")
+	app.Listen(":5000")
 }
